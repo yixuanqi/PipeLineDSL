@@ -1,0 +1,331 @@
+[
+  {
+    "node_id": "EdgeTrim",
+    "node": "EdgeTrim",
+    "params": {
+      "edge_width": {
+        "type": "integer",
+        "range": [0, 100],
+        "default": 5
+      },
+      "trim_mode": {
+        "type": "string",
+        "enum": ["all", "top", "bottom", "left", "right"],
+        "default": "all"
+      }
+    }
+  },
+  {
+    "node_id": "SpikeClip",
+    "node": "SpikeClip",
+    "params": {
+      "threshold": {
+        "type": "float",
+        "range": [0.0, 1000.0],
+        "default": 3.0
+      },
+      "method": {
+        "type": "string",
+        "enum": ["sigma", "absolute", "percentile"],
+        "default": "sigma"
+      },
+      "replace_method": {
+        "type": "string",
+        "enum": ["median", "mean", "interpolation"],
+        "default": "median"
+      }
+    }
+  },
+  {
+    "node_id": "DataFill",
+    "node": "DataFill",
+    "params": {
+      "fill_method": {
+        "type": "string",
+        "enum": ["interpolation", "nearest", "mean", "median", "zero"],
+        "default": "interpolation"
+      },
+      "max_gap": {
+        "type": "integer",
+        "range": [1, 100],
+        "default": 10
+      }
+    }
+  },
+  {
+    "node_id": "HeightClip",
+    "node": "HeightClip",
+    "params": {
+      "min_height": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": -100.0
+      },
+      "max_height": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": 100.0
+      },
+      "clip_action": {
+        "type": "string",
+        "enum": ["remove", "set_nan", "set_value"],
+        "default": "set_nan"
+      }
+    }
+  },
+  {
+    "node_id": "Mask",
+    "node": "Mask",
+    "params": {
+      "mask_type": {
+        "type": "string",
+        "enum": ["rectangle", "circle", "ellipse", "polygon", "custom"],
+        "default": "rectangle"
+      },
+      "invert": {
+        "type": "boolean",
+        "default": false
+      },
+      "coordinates": {
+        "type": "array",
+        "default": []
+      }
+    }
+  },
+  {
+    "node_id": "Filter",
+    "node": "Filter",
+    "params": {
+      "filter_type": {
+        "type": "string",
+        "enum": ["gaussian", "median", "mean", "bilateral", "savgol"],
+        "default": "gaussian"
+      },
+      "kernel_size": {
+        "type": "integer",
+        "range": [1, 51],
+        "default": 5
+      },
+      "sigma": {
+        "type": "float",
+        "range": [0.1, 10.0],
+        "default": 1.0
+      }
+    }
+  },
+  {
+    "node_id": "SlopeFilter",
+    "node": "SlopeFilter",
+    "params": {
+      "max_slope": {
+        "type": "float",
+        "range": [0.0, 90.0],
+        "default": 45.0
+      },
+      "slope_unit": {
+        "type": "string",
+        "enum": ["degree", "radian", "gradient"],
+        "default": "degree"
+      }
+    }
+  },
+  {
+    "node_id": "Fit",
+    "node": "Fit",
+    "params": {
+      "fit_type": {
+        "type": "string",
+        "enum": ["plane", "polynomial", "sphere", "cylinder"],
+        "default": "plane"
+      },
+      "polynomial_order": {
+        "type": "integer",
+        "range": [1, 10],
+        "default": 2
+      },
+      "fit_direction": {
+        "type": "string",
+        "enum": ["x", "y", "xy"],
+        "default": "xy"
+      }
+    }
+  },
+  {
+    "node_id": "Remove",
+    "node": "Remove",
+    "params": {
+      "remove_type": {
+        "type": "string",
+        "enum": ["plane", "cylinder", "sphere", "cone", "polynomial"],
+        "default": "plane"
+      },
+      "order": {
+        "type": "integer",
+        "range": [1, 10],
+        "default": 1
+      }
+    }
+  },
+  {
+    "node_id": "ZernikeRemove",
+    "node": "ZernikeRemove",
+    "params": {
+      "max_order": {
+        "type": "integer",
+        "range": [1, 20],
+        "default": 4
+      },
+      "terms": {
+        "type": "array",
+        "default": []
+      },
+      "remove_mode": {
+        "type": "string",
+        "enum": ["selected", "up_to_order"],
+        "default": "up_to_order"
+      }
+    }
+  },
+  {
+    "node_id": "Translate",
+    "node": "Translate",
+    "params": {
+      "offset_x": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": 0.0
+      },
+      "offset_y": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": 0.0
+      },
+      "offset_z": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "Rotate",
+    "node": "Rotate",
+    "params": {
+      "angle": {
+        "type": "float",
+        "range": [-360.0, 360.0],
+        "default": 0.0
+      },
+      "rotation_axis": {
+        "type": "string",
+        "enum": ["x", "y", "z"],
+        "default": "z"
+      },
+      "center_x": {
+        "type": "float",
+        "default": 0.0
+      },
+      "center_y": {
+        "type": "float",
+        "default": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "Scale",
+    "node": "Scale",
+    "params": {
+      "scale_x": {
+        "type": "float",
+        "range": [0.001, 1000.0],
+        "default": 1.0
+      },
+      "scale_y": {
+        "type": "float",
+        "range": [0.001, 1000.0],
+        "default": 1.0
+      },
+      "scale_z": {
+        "type": "float",
+        "range": [0.001, 1000.0],
+        "default": 1.0
+      }
+    }
+  },
+  {
+    "node_id": "Offset",
+    "node": "Offset",
+    "params": {
+      "offset_value": {
+        "type": "float",
+        "range": [-10000.0, 10000.0],
+        "default": 0.0
+      },
+      "offset_mode": {
+        "type": "string",
+        "enum": ["absolute", "relative"],
+        "default": "absolute"
+      }
+    }
+  },
+  {
+    "node_id": "AnalyzeResult",
+    "node": "AnalyzeResult",
+    "params": {
+      "analysis_type": {
+        "type": "string",
+        "enum": ["roughness", "waviness", "flatness", "all"],
+        "default": "all"
+      },
+      "parameters": {
+        "type": "array",
+        "enum": ["Ra", "Rq", "Rz", "Rp", "Rv", "Rt", "Rsk", "Rku", "Sa", "Sq", "Sz", "Sp", "Sv", "St", "Ssk", "Sku"],
+        "default": ["Ra", "Rq", "Rz", "Sa", "Sq", "Sz"]
+      }
+    }
+  },
+  {
+    "node_id": "StepHeight",
+    "node": "StepHeight",
+    "params": {
+      "measurement_mode": {
+        "type": "string",
+        "enum": ["single", "multiple", "profile"],
+        "default": "single"
+      },
+      "region_definition": {
+        "type": "string",
+        "enum": ["auto", "manual"],
+        "default": "auto"
+      },
+      "reference_region": {
+        "type": "array",
+        "default": []
+      }
+    }
+  },
+  {
+    "node_id": "SaveData",
+    "node": "SaveData",
+    "params": {
+      "file_path": {
+        "type": "string",
+        "default": ""
+      },
+      "file_format": {
+        "type": "string",
+        "enum": ["csv", "xlsx", "txt", "h5", "npy", "mat"],
+        "default": "csv"
+      },
+      "save_metadata": {
+        "type": "boolean",
+        "default": true
+      },
+      "precision": {
+        "type": "integer",
+        "range": [1, 15],
+        "default": 6
+      }
+    }
+  }
+]
