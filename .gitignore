@@ -41,7 +41,9 @@ HuggingFace
 huggingface/
 
 Training Outputs
-output/
+output/checkpoint-*/
+output/*.log
+!output/qwen-pipeline-lora/
 checkpoint-*/
 *.log
 logs/
