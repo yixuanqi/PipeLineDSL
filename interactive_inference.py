@@ -5,9 +5,11 @@
 
 import os
 import json
+import time
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 from peft import PeftModel
+from threading import Thread
 
 
 def load_model():
@@ -54,8 +56,68 @@ def load_model():
     return model, tokenizer
 
 
+def generate_pipeline_streaming(model, tokenizer, instruction: str, max_new_tokens: int = 1024):
+    """流式生成 Pipeline JSON，实时显示生成过程"""
+    
+    prompt = f"""<|im_start|>system
+你是一个数据处理Pipeline生成助手。根据用户的自然语言描述，生成对应的Pipeline JSON配置。
+<|im_end|>
+<|im_start|>user
+{instruction}
+<|im_end|>
+<|im_start|>assistant
+"""
+    
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    
+    streamer = TextIteratorStreamer(
+        tokenizer,
+        skip_prompt=True,
+        skip_special_tokens=True
+    )
+    
+    generation_kwargs = {
+        **inputs,
+        "max_new_tokens": max_new_tokens,
+        "do_sample": True,
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "repetition_penalty": 1.1,
+        "pad_token_id": tokenizer.pad_token_id,
+        "eos_token_id": tokenizer.eos_token_id,
+        "streamer": streamer
+    }
+    
+    thread = Thread(target=model.generate, kwargs=generation_kwargs)
+    thread.start()
+    
+    print("\n🤖 模型正在思考并生成回答...\n")
+    print("=" * 60)
+    print("实时生成过程:")
+    print("=" * 60)
+    
+    full_response = ""
+    start_time = time.time()
+    
+    for new_text in streamer:
+        full_response += new_text
+        print(new_text, end='', flush=True)
+    
+    thread.join()
+    
+    elapsed_time = time.time() - start_time
+    print("\n" + "=" * 60)
+    print(f"✅ 生成完成！耗时: {elapsed_time:.2f}秒")
+    print("=" * 60)
+    
+    if "<|im_end|>" in full_response:
+        full_response = full_response.split("<|im_end|>")[0]
+    
+    return full_response.strip()
+
+
 def generate_pipeline(model, tokenizer, instruction: str, max_new_tokens: int = 1024):
-    """生成 Pipeline JSON"""
+    """生成 Pipeline JSON（非流式，用于批量处理）"""
     
     prompt = f"""<|im_start|>system
 你是一个数据处理Pipeline生成助手。根据用户的自然语言描述，生成对应的Pipeline JSON配置。
@@ -128,8 +190,7 @@ def interactive_inference():
                 print("退出推理模式")
                 break
             
-            print("\n生成中...")
-            response = generate_pipeline(model, tokenizer, instruction)
+            response = generate_pipeline_streaming(model, tokenizer, instruction)
             
             print("\n" + "=" * 60)
             print("生成结果:")
